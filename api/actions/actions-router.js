@@ -5,7 +5,6 @@ const Actions = require("./actions-model")
 
 const {validateActionId} = require("./actions-middlware")
 
-router.use(express.json())
 
 
 router.get("/", (req,res, next)=>{
@@ -47,20 +46,19 @@ router.post("/", (req,res, next)=>{
     }
 })
 router.put("/:id", validateActionId, (req,res, next)=>{
-    const {name, description, completed} = req.body
-    const currentId = Actions.get(req.params.id)
-    if(!name || !description || !completed){
+    const {notes, description, completed, project_id} = req.body
+    if(!notes || !description || !completed || !project_id){
         res.status(400).json({
-            message: "please provide title, contents, and completed for the post"
+            message: "please provide name, description, and completed for the post"
         })
     }
     else{
-        Actions.update(req.params.id, {name: req.name})//TODO NOT SENDING WHAT IT WANTS
+        Actions.update(req.params.id, req.body)
             .then(project =>{
                 res.json(project)
             })
             .catch(err =>{
-            next()
+            next(err)
             })
     }
 })

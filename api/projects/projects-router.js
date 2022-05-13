@@ -5,7 +5,6 @@ const Projects = require("./projects-model")
 
 const {validateProjectId} = require("./projects-middleware")
 
-router.use(express.json())
 
 
 router.get("/", (req,res, next)=>{
@@ -46,21 +45,21 @@ router.post("/", (req,res)=>{
             })
     }
 })
-router.put("/:id", validateProjectId, (req,res)=>{
+router.put("/:id", validateProjectId, (req, res, next)=>{
+    console.log(req)
     const {name, description, completed} = req.body
-    const currentId = Projects.get(req.params.id)
-    if(!name || !description || !completed){
+    if(!name || !description || !completed){   //TODO NOT recieveing WHAT IT WANTS
         res.status(400).json({
-            message: "please provide title, contents, and completed for the post"
+            message: "please provide name, description, and completed for the post"
         })
     }
     else{
-        Projects.update(req.params.id, {name: req.name})//TODO NOT SENDING WHAT IT WANTS
+        Projects.update(req.params.id, req.body)
             .then(project =>{
                 res.json(project)
             })
             .catch(err =>{
-            next()
+            next(err)
             })
     }
 })

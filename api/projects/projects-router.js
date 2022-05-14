@@ -48,7 +48,8 @@ router.post("/", (req,res)=>{
 router.put("/:id", validateProjectId, (req, res, next)=>{
     console.log(req)
     const {name, description, completed} = req.body
-    if(!name || !description || !completed){   //TODO NOT recieveing WHAT IT WANTS
+    const completedBool = typeof completed
+    if(!name || !description || completedBool != "boolean"){   //TODO NOT recieveing WHAT IT WANTS
         res.status(400).json({
             message: "please provide name, description, and completed for the post"
         })
